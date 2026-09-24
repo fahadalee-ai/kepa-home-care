@@ -22,14 +22,20 @@ export type User = {
   preferredContact?: ContactMethod;
 };
 
+export type ServiceSection = {
+  heading?: string;
+  paragraphs: string[];
+};
+
 export type Service = {
   id: string;
   name: string;
   short: string;
   description: string;
   image: string;
-  who: string;
-  includes: string[];
+  who?: string;
+  includes?: string[];
+  sections?: ServiceSection[];
 };
 
 export type CoverageArea = {
@@ -115,49 +121,65 @@ export const SERVICES: Service[] = [
   {
     id: "skilled-nursing",
     name: "Skilled Nursing",
-    short: "Clinical nursing care in the comfort of home",
+    short:
+      "Skilled nursing services in Worcester, Boston, Springfield, Lowell and surrounding.",
     description:
-      "KEPA Home Care brings skilled nursing to your doorstep so you can recover and stay well without a hospital stay. Our nurses deliver clinical care with the warmth of a home visit.",
+      "KEPA Home Care, LLC is proud to offer an extensive range of skilled nursing services in the vibrant cities Worcester, Boston, Springfield, Lowell and surrounding. Our skilled nursing care is not just a service; it’s a commitment to delivering the highest standards of healthcare while keeping your comfort and well-being in mind.",
     image: IMAGES.skilledNursing,
-    who: "Patients recovering from surgery, managing a chronic condition, or needing clinical oversight at home in Massachusetts.",
-    includes: [
-      "Wound care",
-      "Medication management",
-      "Health monitoring",
-      "Post-surgical care",
-      "Chronic disease management",
+    sections: [
+      {
+        paragraphs: [
+          "KEPA Home Care, LLC is proud to offer an extensive range of skilled nursing services in the vibrant cities Worcester, Boston, Springfield, Lowell and surrounding. Our skilled nursing care is not just a service; it’s a commitment to delivering the highest standards of healthcare while keeping your comfort and well-being in mind.",
+          "In Worcester, Boston, Springfield, Lowell and surrounding our skilled nursing services are provided by a dedicated team of experienced professionals who understand the importance of personalized healthcare solutions. We tailor our care plans to meet your unique needs, ensuring you receive the highest quality of care right in the familiar surroundings of your home. Our team in Worcester, Boston, Springfield, Lowell and surrounding works diligently to ensure that you get the specialized care you deserve, promoting your overall health and comfort.",
+          "In Worcester, Boston, Springfield, Lowell and surrounding we take our skilled nursing care to the next level. Our skilled nursing caregivers create comprehensive care plans that prioritize your health and safety while preserving your independence. We understand that health is a deeply personal journey, and we’re here to provide you with the expert care you need to maintain and improve your well-being. Your comfort and independence are of the utmost importance to us.",
+          "At KEPA Home Care, LLC, we are dedicated to being your trusted partners in skilled nursing services in Worcester, Boston, Springfield, Lowell and surrounding. We go above and beyond to provide exceptional care that is tailored to your specific healthcare needs. Contact us today to learn more about our comprehensive range of services and how we can assist you in maintaining and improving your overall well-being, all in the heart of these dynamic cities.",
+        ],
+      },
     ],
   },
   {
     id: "home-health-aide",
     name: "Home Health Aide Services",
-    short: "Daily support that keeps life at home possible",
+    short:
+      "Top-tier home health aide services in Worcester, Boston, Springfield, Lowell and surrounding.",
     description:
-      "Certified home health aides help with the routines of daily living so clients can remain safely at home. Care is personal, patient, and built around each household.",
+      "KEPA Home Care, LLC is your trusted source for top-tier home health aide services in Worcester, Boston, Springfield, Lowell and surrounding. Our team of dedicated and highly trained in-home health aides is committed to delivering exceptional care and unwavering support, with a primary focus on your overall well-being.",
     image: IMAGES.homeHealthAide,
-    who: "Older adults and anyone who needs hands-on help with bathing, dressing, meals, and mobility at home.",
-    includes: [
-      "Personal care and bathing",
-      "Dressing and grooming",
-      "Meal preparation",
-      "Mobility and transfer assistance",
-      "Light homemaking and companionship",
+    sections: [
+      {
+        paragraphs: [
+          "KEPA Home Care, LLC is your trusted source for top-tier home health aide services in Worcester, Boston, Springfield, Lowell and surrounding. Our team of dedicated and highly trained in-home health aides is committed to delivering exceptional care and unwavering support, with a primary focus on your overall well-being.",
+          "Our in-home health aides are more than just professionals; they are compassionate caregivers with a profound understanding of the importance of personalized care and assistance. Whether you call Worcester, Boston, Springfield, Lowell and surrounding our goal is to help you maintain your health, independence, and overall comfort.",
+          "Our home health aide services in Worcester, Boston, Springfield, Lowell and surrounding are tailored to ensure that you receive the care and support you need to live a fulfilling and healthy life. We understand that every individual is unique, and our in-home health aides in Worcester, Boston, Springfield, Lowell and surrounding are dedicated to addressing your specific needs, providing expert care within the comfort of your home.",
+          "We stand as your trusted home health aide agency in Worcester, Boston, Springfield, Lowell and surrounding ready to bring expert healthcare assistance directly to your doorstep. Our in-home health aides in Worcester, Boston, Springfield, Lowell and surrounding are not only highly skilled but also deeply compassionate. They are committed to delivering the care you require within the familiar surroundings of your home, ensuring your comfort and peace of mind.",
+          "At KEPA Home Care, LLC, we place paramount importance on delivering personalized care because we understand that your well-being is unique to you. Our in-home health aides are at your service, ensuring you receive the highest quality assistance tailored to your specific needs. Please don’t hesitate to contact us today to discover how our home health aide services can significantly enhance your well-being in Worcester, Boston, Springfield, Lowell and surrounding.",
+        ],
+      },
     ],
   },
   {
     id: "physical-therapy",
     name: "Physical Therapy",
-    short: "Mobility and strength, practiced in your living room",
+    short:
+      "The best physical therapy center in Worcester, Boston, Springfield, Lowell and surrounding.",
     description:
-      "In-home physical therapy helps you regain mobility and independence after injury or illness. Sessions happen where you actually live and move.",
+      "When it comes to your physical therapy needs, you deserve the very best. KEPA Home Care, LLC proudly stands as the best physical therapy center in Worcester, Boston, Springfield, Lowell and surrounding. We are committed to providing the highest quality physical therapy services to promote your health, well-being, and improved quality of life.",
     image: IMAGES.physicalTherapy,
-    who: "People rebuilding strength after injury, surgery, or a decline in balance and walking.",
-    includes: [
-      "Mobility and gait training",
-      "Strength and balance exercises",
-      "Pain management",
-      "Post-injury recovery",
-      "Home safety and fall-prevention coaching",
+    sections: [
+      {
+        paragraphs: [
+          "When it comes to your physical therapy needs, you deserve the very best. KEPA Home Care, LLC proudly stands as the best physical therapy center in Worcester, Boston, Springfield, Lowell and surrounding. We are committed to providing the highest quality physical therapy services to promote your health, well-being, and improved quality of life.",
+          "At our state-of-the-art facility, you can expect to receive exceptional care from our expert physical therapists. We understand that each individual has unique rehabilitation needs, and our focus is on tailoring our services to address those specific needs. Our team is dedicated to guiding you on the path to recovery and improved physical health.",
+        ],
+      },
+      {
+        heading: "In-Home Physical Therapists",
+        paragraphs: [
+          "We also recognize that convenience and comfort are paramount during your healing journey. That’s why we offer in-home physical therapists who bring their expertise directly to your doorstep. Our team of in-home physical therapists is not only highly skilled but also deeply compassionate. They prioritize your convenience and comfort, ensuring you receive personalized care within the familiar surroundings of your own home.",
+          "Our services go beyond addressing physical ailments; they are about enhancing your overall quality of life. Whether you’re in search of the best physical therapy center in Worcester, Boston, Springfield, Lowell and surrounding or in-home physical therapists who prioritize your well-being, KEPA Home Care, LLC is here to provide exceptional services tailored to your unique needs.",
+          "Our physical therapy services are designed to cater to individuals in the Worcester, Boston, Springfield, Lowell and surrounding. We focus on promoting your well-being, and our commitment is to guide you towards a path of better health, increased mobility, and an improved quality of life. Contact us today to learn more about how our physical therapy services can assist you in achieving your health and wellness goals. Your journey to improved well-being starts with us.",
+        ],
+      },
     ],
   },
   {
