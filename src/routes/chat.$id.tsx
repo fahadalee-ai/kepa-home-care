@@ -6,7 +6,7 @@ import { chatThreadById, initials, messagesForThread, type ChatMessage } from "@
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/chat/$id")({
-  head: () => ({ meta: [{ title: "Chat — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Chat — KEPA Home Care" }] }),
   component: ChatDetailScreen,
 });
 

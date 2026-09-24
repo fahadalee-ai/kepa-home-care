@@ -16,7 +16,7 @@ import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/appointments/$id")({
-  head: () => ({ meta: [{ title: "Appointment — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Appointment — KEPA Home Care" }] }),
   component: AppointmentDetailScreen,
 });
 

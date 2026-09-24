@@ -4,7 +4,7 @@ import { Card, Header, Screen } from "@/components/kit";
 import { BUSINESS } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/profile/support")({
-  head: () => ({ meta: [{ title: "Support — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Support — KEPA Home Care" }] }),
   component: SupportScreen,
 });
 

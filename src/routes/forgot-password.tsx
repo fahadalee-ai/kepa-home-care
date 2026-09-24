@@ -6,7 +6,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/forgot-password")({
-  head: () => ({ meta: [{ title: "Reset password — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Reset password — KEPA Home Care" }] }),
   component: ForgotPasswordScreen,
 });
 

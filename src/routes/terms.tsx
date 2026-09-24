@@ -3,7 +3,7 @@ import { Header, Screen } from "@/components/kit";
 import { BUSINESS } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/terms")({
-  head: () => ({ meta: [{ title: "Terms of Service — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Terms of Service — KEPA Home Care" }] }),
   component: TermsScreen,
 });
 

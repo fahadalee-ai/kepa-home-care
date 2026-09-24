@@ -3,7 +3,7 @@ import { Header, Screen } from "@/components/kit";
 import { BUSINESS } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/privacy")({
-  head: () => ({ meta: [{ title: "Privacy Policy — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Privacy Policy — KEPA Home Care" }] }),
   component: PrivacyScreen,
 });
 

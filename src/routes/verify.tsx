@@ -11,7 +11,7 @@ export const Route = createFileRoute("/verify")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     email: typeof s.email === "string" ? s.email : undefined,
   }),
-  head: () => ({ meta: [{ title: "Verify — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Verify — KEPA Home Care" }] }),
   component: VerifyScreen,
 });
 

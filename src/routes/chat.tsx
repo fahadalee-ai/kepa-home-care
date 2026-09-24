@@ -3,7 +3,7 @@ import { Header, Screen } from "@/components/kit";
 import { CHAT_THREADS, initials, type ChatThread } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/chat")({
-  head: () => ({ meta: [{ title: "Messages — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Messages — KEPA Home Care" }] }),
   component: ChatRoute,
 });
 

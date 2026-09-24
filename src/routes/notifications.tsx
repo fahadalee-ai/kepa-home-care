@@ -5,7 +5,7 @@ import { NOTIFICATIONS, type AppNotification } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/notifications")({
-  head: () => ({ meta: [{ title: "Notifications — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Notifications — KEPA Home Care" }] }),
   component: NotificationsRoute,
 });
 

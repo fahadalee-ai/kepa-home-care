@@ -3,7 +3,7 @@ import { Banner, Button, Card, Chip, Header, Screen } from "@/components/kit";
 import { notificationById } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/notifications/$id")({
-  head: () => ({ meta: [{ title: "Notification — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Notification — KEPA Home Care" }] }),
   component: NotificationDetailScreen,
 });
 
