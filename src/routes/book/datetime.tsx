@@ -1,21 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useState } from "react";
 import { BookFrame } from "@/components/BookFrame";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Button } from "@/components/kit";
+import { Button, Textarea } from "@/components/kit";
 import { Calendar } from "@/components/ui/calendar";
-import { TIME_SLOTS, formatTime, todayIso, unavailableSlotsForDate } from "@/lib/mock-data";
+import { RECURRENCE, TIME_OF_DAY, todayIso, type Recurrence, type TimeOfDay } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
-
-export const Route = createFileRoute("/book/datetime")({
-  head: () => ({ meta: [{ title: "Date & time — TXL Med PLLC" }] }),
-  component: () => (
-    <RequireAuth>
-      <DateTimeScreen />
-    </RequireAuth>
-  ),
-});
 
 function parseIso(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -28,72 +19,87 @@ function toIso(date: Date) {
   return `${date.getFullYear()}-${m}-${d}`;
 }
 
+const SLOT_TIME: Record<TimeOfDay, string> = {
+  morning: "09:00",
+  afternoon: "13:00",
+  evening: "17:00",
+};
+
+export const Route = createFileRoute("/book/datetime")({
+  head: () => ({ meta: [{ title: "Date and time — KEPA Home Care" }] }),
+  component: () => (
+    <RequireAuth>
+      <DateTimeScreen />
+    </RequireAuth>
+  ),
+});
+
 function DateTimeScreen() {
   const navigate = useNavigate();
   const { draft, updateDraft } = useApp();
-  const selected = draft.date ? parseIso(draft.date) : undefined;
-  const blocked = useMemo(
-    () => (draft.date ? unavailableSlotsForDate(draft.date) : []),
-    [draft.date],
-  );
+  const [date, setDate] = useState(draft.date);
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay | "">(draft.timeOfDay);
+  const [recurrence, setRecurrence] = useState<Recurrence>(draft.recurrence);
+  const [notes, setNotes] = useState(draft.notes);
 
   return (
-    <BookFrame step={1}>
-      <p className="mb-3 text-sm text-muted-foreground">
-        Pick a day and an arrival window. We'll confirm the exact time with you.
-      </p>
-      <div className="rounded-2xl border border-border bg-card p-2">
-        <Calendar
-          mode="single"
-          selected={selected}
-          onSelect={(day) => {
-            if (!day) return;
-            updateDraft({ date: toIso(day), time: "" });
-          }}
-          disabled={{ before: parseIso(todayIso()) }}
-          className="mx-auto w-full [--cell-size:2.4rem]"
-        />
+    <BookFrame step={draft.servicePreset ? 1 : 2}>
+      <Calendar
+        mode="single"
+        selected={date ? parseIso(date) : undefined}
+        onSelect={(day) => day && setDate(toIso(day))}
+        disabled={{ before: parseIso(todayIso()) }}
+        className="mx-auto w-full rounded-2xl border border-border bg-white p-2"
+      />
+      <p className="mt-4 mb-2 text-sm font-medium">Time of day</p>
+      <div className="flex gap-2">
+        {TIME_OF_DAY.map((slot) => (
+          <button
+            key={slot.id}
+            type="button"
+            onClick={() => setTimeOfDay(slot.id)}
+            className={cn(
+              "min-h-11 flex-1 rounded-2xl border text-sm font-semibold",
+              timeOfDay === slot.id ? "border-primary bg-primary text-white" : "border-border bg-white",
+            )}
+          >
+            {slot.label}
+          </button>
+        ))}
       </div>
-      <h3 className="mt-5 mb-2 text-sm font-semibold">Available times</h3>
-      {!draft.date ? (
-        <p className="text-sm text-muted-foreground">Select a date to see open slots.</p>
-      ) : (
-        <div className="grid grid-cols-3 gap-2">
-          {TIME_SLOTS.map((slot) => {
-            const taken = blocked.includes(slot);
-            const active = draft.time === slot;
-            return (
-              <button
-                key={slot}
-                type="button"
-                disabled={taken}
-                onClick={() => updateDraft({ time: slot })}
-                className={cn(
-                  "min-h-11 rounded-xl border px-2 text-sm font-medium",
-                  taken && "cursor-not-allowed opacity-40",
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card text-foreground",
-                )}
-              >
-                {formatTime(slot)}
-              </button>
-            );
-          })}
-        </div>
-      )}
-      <div className="mt-6 flex gap-2">
-        <Button variant="outline" full onClick={() => navigate({ to: "/book" })}>
-          Back
-        </Button>
-        <Button
-          full
-          disabled={!draft.date || !draft.time}
-          onClick={() => navigate({ to: "/book/details" })}
-        >
-          Continue
-        </Button>
+      <p className="mt-4 mb-2 text-sm font-medium">Recurring visit</p>
+      <div className="flex flex-col gap-2">
+        {RECURRENCE.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setRecurrence(item.id)}
+            className={cn(
+              "min-h-11 rounded-2xl border px-3 text-left text-sm font-semibold",
+              recurrence === item.id ? "border-primary bg-[#E8F0FE] text-primary" : "border-border bg-white",
+            )}
+          >
+            {item.label}
+          </button>
+        ))}
       </div>
+      <label className="mt-4 mb-4 block">
+        <span className="mb-1 block text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          Special instructions
+        </span>
+        <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+      </label>
+      <Button
+        full
+        disabled={!date || !timeOfDay}
+        onClick={() => {
+          if (!timeOfDay) return;
+          updateDraft({ date, timeOfDay, time: SLOT_TIME[timeOfDay], recurrence, notes });
+          navigate({ to: "/book/review" });
+        }}
+      >
+        Continue
+      </Button>
     </BookFrame>
   );
 }

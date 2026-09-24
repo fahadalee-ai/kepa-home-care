@@ -34,11 +34,15 @@ type Store = {
     email: string;
     phone: string;
     password: string;
-    cdlNumber?: string;
-    employer?: string;
-    role?: string;
+    dob?: string;
+    role?: "patient" | "family";
+    address?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    preferredContact?: "phone" | "email" | "text";
   }) => { ok: true; email: string } | { ok: false; reason: "exists" };
-  completeVerification: (email: string) => { ok: true } | { ok: false };
+  completeVerification: (email: string, patch?: Partial<User>) => { ok: true } | { ok: false };
   requestPasswordReset: (identifier: string) => { ok: true } | { ok: false; reason: "not_found" };
   resetPassword: (
     identifier: string,
@@ -154,31 +158,37 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
         const created: User = {
           id: `u${Date.now()}`,
-          name: input.name.trim() || "Driver",
-          email: email || `driver${Date.now()}@txlmed.com`,
+          name: input.name.trim() || "KEPA Client",
+          email: email || `client${Date.now()}@kepahomecare.com`,
           phone: input.phone.trim(),
           password: input.password,
-          cdlNumber: input.cdlNumber?.trim() || undefined,
-          employer: input.employer?.trim() || undefined,
-          role: input.role?.trim() || undefined,
+          dob: input.dob?.trim() || undefined,
+          role: input.role,
+          address: input.address?.trim() || undefined,
+          city: input.city?.trim() || undefined,
+          state: input.state?.trim() || "MA",
+          zip: input.zip?.trim() || undefined,
+          preferredContact: input.preferredContact,
         };
         persistUsers([...users, created]);
         writeStorage("pendingUser", created.id);
         markOnboarded();
         return { ok: true, email: created.email };
       },
-      completeVerification: (email) => {
+      completeVerification: (email, patch) => {
         const pendingId = readStorage("pendingUser");
         const found =
           users.find((u) => u.id === pendingId) ??
           users.find((u) => email && u.email.toLowerCase() === email.trim().toLowerCase()) ??
           users[0];
         if (!found) return { ok: false };
-        setUser(found);
+        const next = patch ? { ...found, ...patch, id: found.id } : found;
+        if (patch) persistUsers(users.map((u) => (u.id === next.id ? next : u)));
+        setUser(next);
         setGuest(false);
         clearStorage("guest");
         clearStorage("pendingUser");
-        writeStorage("session", found.id);
+        writeStorage("session", next.id);
         return { ok: true };
       },
       requestPasswordReset: () => {
@@ -210,15 +220,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
           id: `apt${Date.now()}`,
           userId: user?.id ?? "guest",
           serviceId: input.serviceId,
+          areaId: input.areaId,
           date: input.date,
           time: input.time,
+          timeOfDay: input.timeOfDay || "morning",
+          recurrence: input.recurrence,
           name: input.name,
           phone: input.phone,
+          email: input.email,
+          contactMethod: input.contactMethod,
+          bookingFor: input.bookingFor,
+          patientName: input.patientName,
+          patientDob: input.patientDob,
           address: input.address,
           city: input.city,
           state: input.state,
           zip: input.zip,
           notes: input.notes,
+          medicalNotes: input.medicalNotes,
+          insurance: input.insurance,
+          selfPay: input.selfPay,
           status: "upcoming" satisfies AppointmentStatus,
           createdAt: new Date().toISOString().slice(0, 10),
         };
@@ -226,7 +247,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         const cleared = emptyDraft();
         setDraft(cleared);
         writeJson("draft", cleared);
-        pushToast("Appointment requested", "We'll confirm your mobile visit shortly.");
+        pushToast("Appointment requested", "Our care team will contact you within 24 hours.");
         return created;
       },
       cancelAppointment: (id) => {

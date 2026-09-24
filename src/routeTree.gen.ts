@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as ChatRouteImport } from './routes/chat'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CoverageRouteImport } from './routes/coverage'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as LoginRouteImport } from './routes/login'
@@ -21,11 +24,14 @@ import { Route as PreviewDothtmlRouteImport } from './routes/preview[.]html'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AppointmentsIdRouteImport } from './routes/appointments.$id'
 import { Route as BookIndexRouteImport } from './routes/book/index'
+import { Route as BookAreaRouteImport } from './routes/book/area'
 import { Route as BookConfirmationRouteImport } from './routes/book/confirmation'
+import { Route as BookContactRouteImport } from './routes/book/contact'
 import { Route as BookDatetimeRouteImport } from './routes/book/datetime'
 import { Route as BookDetailsRouteImport } from './routes/book/details'
 import { Route as BookReviewRouteImport } from './routes/book/review'
@@ -33,11 +39,17 @@ import { Route as ChatIdRouteImport } from './routes/chat.$id'
 import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 import { Route as ProfileEditRouteImport } from './routes/profile.edit'
 import { Route as ProfileSupportRouteImport } from './routes/profile.support'
+import { Route as ServicesIdRouteImport } from './routes/services.$id'
 import { Route as HomeServiceIdRouteImport } from './routes/home.service.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppointmentsRoute = AppointmentsRouteImport.update({
@@ -48,6 +60,16 @@ const AppointmentsRoute = AppointmentsRouteImport.update({
 const ChatRoute = ChatRouteImport.update({
   id: '/chat',
   path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoverageRoute = CoverageRouteImport.update({
+  id: '/coverage',
+  path: '/coverage',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -95,6 +117,11 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -115,9 +142,19 @@ const BookIndexRoute = BookIndexRouteImport.update({
   path: '/book/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookAreaRoute = BookAreaRouteImport.update({
+  id: '/book/area',
+  path: '/book/area',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BookConfirmationRoute = BookConfirmationRouteImport.update({
   id: '/book/confirmation',
   path: '/book/confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookContactRoute = BookContactRouteImport.update({
+  id: '/book/contact',
+  path: '/book/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookDatetimeRoute = BookDatetimeRouteImport.update({
@@ -155,6 +192,11 @@ const ProfileSupportRoute = ProfileSupportRouteImport.update({
   path: '/support',
   getParentRoute: () => ProfileRoute,
 } as any)
+const ServicesIdRoute = ServicesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ServicesRoute,
+} as any)
 const HomeServiceIdRoute = HomeServiceIdRouteImport.update({
   id: '/service/$id',
   path: '/service/$id',
@@ -163,8 +205,11 @@ const HomeServiceIdRoute = HomeServiceIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/appointments': typeof AppointmentsRouteWithChildren
   '/chat': typeof ChatRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/coverage': typeof CoverageRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/home': typeof HomeRouteWithChildren
   '/login': typeof LoginRoute
@@ -174,10 +219,13 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
+  '/services': typeof ServicesRouteWithChildren
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/appointments/$id': typeof AppointmentsIdRoute
+  '/book/area': typeof BookAreaRoute
   '/book/confirmation': typeof BookConfirmationRoute
+  '/book/contact': typeof BookContactRoute
   '/book/datetime': typeof BookDatetimeRoute
   '/book/details': typeof BookDetailsRoute
   '/book/review': typeof BookReviewRoute
@@ -185,13 +233,17 @@ export interface FileRoutesByFullPath {
   '/notifications/$id': typeof NotificationsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile/support': typeof ProfileSupportRoute
+  '/services/$id': typeof ServicesIdRoute
   '/book/': typeof BookIndexRoute
   '/home/service/$id': typeof HomeServiceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/appointments': typeof AppointmentsRouteWithChildren
   '/chat': typeof ChatRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/coverage': typeof CoverageRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/home': typeof HomeRouteWithChildren
   '/login': typeof LoginRoute
@@ -201,10 +253,13 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
+  '/services': typeof ServicesRouteWithChildren
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/appointments/$id': typeof AppointmentsIdRoute
+  '/book/area': typeof BookAreaRoute
   '/book/confirmation': typeof BookConfirmationRoute
+  '/book/contact': typeof BookContactRoute
   '/book/datetime': typeof BookDatetimeRoute
   '/book/details': typeof BookDetailsRoute
   '/book/review': typeof BookReviewRoute
@@ -212,14 +267,18 @@ export interface FileRoutesByTo {
   '/notifications/$id': typeof NotificationsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile/support': typeof ProfileSupportRoute
+  '/services/$id': typeof ServicesIdRoute
   '/book': typeof BookIndexRoute
   '/home/service/$id': typeof HomeServiceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/appointments': typeof AppointmentsRouteWithChildren
   '/chat': typeof ChatRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/coverage': typeof CoverageRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/home': typeof HomeRouteWithChildren
   '/login': typeof LoginRoute
@@ -229,10 +288,13 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
+  '/services': typeof ServicesRouteWithChildren
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/appointments/$id': typeof AppointmentsIdRoute
+  '/book/area': typeof BookAreaRoute
   '/book/confirmation': typeof BookConfirmationRoute
+  '/book/contact': typeof BookContactRoute
   '/book/datetime': typeof BookDatetimeRoute
   '/book/details': typeof BookDetailsRoute
   '/book/review': typeof BookReviewRoute
@@ -240,6 +302,7 @@ export interface FileRoutesById {
   '/notifications/$id': typeof NotificationsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile/support': typeof ProfileSupportRoute
+  '/services/$id': typeof ServicesIdRoute
   '/book/': typeof BookIndexRoute
   '/home/service/$id': typeof HomeServiceIdRoute
 }
@@ -247,8 +310,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/appointments'
     | '/chat'
+    | '/contact'
+    | '/coverage'
     | '/forgot-password'
     | '/home'
     | '/login'
@@ -258,10 +324,13 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/register'
+    | '/services'
     | '/terms'
     | '/verify'
     | '/appointments/$id'
+    | '/book/area'
     | '/book/confirmation'
+    | '/book/contact'
     | '/book/datetime'
     | '/book/details'
     | '/book/review'
@@ -269,13 +338,17 @@ export interface FileRouteTypes {
     | '/notifications/$id'
     | '/profile/edit'
     | '/profile/support'
+    | '/services/$id'
     | '/book/'
     | '/home/service/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/appointments'
     | '/chat'
+    | '/contact'
+    | '/coverage'
     | '/forgot-password'
     | '/home'
     | '/login'
@@ -285,10 +358,13 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/register'
+    | '/services'
     | '/terms'
     | '/verify'
     | '/appointments/$id'
+    | '/book/area'
     | '/book/confirmation'
+    | '/book/contact'
     | '/book/datetime'
     | '/book/details'
     | '/book/review'
@@ -296,13 +372,17 @@ export interface FileRouteTypes {
     | '/notifications/$id'
     | '/profile/edit'
     | '/profile/support'
+    | '/services/$id'
     | '/book'
     | '/home/service/$id'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/appointments'
     | '/chat'
+    | '/contact'
+    | '/coverage'
     | '/forgot-password'
     | '/home'
     | '/login'
@@ -312,10 +392,13 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/register'
+    | '/services'
     | '/terms'
     | '/verify'
     | '/appointments/$id'
+    | '/book/area'
     | '/book/confirmation'
+    | '/book/contact'
     | '/book/datetime'
     | '/book/details'
     | '/book/review'
@@ -323,14 +406,18 @@ export interface FileRouteTypes {
     | '/notifications/$id'
     | '/profile/edit'
     | '/profile/support'
+    | '/services/$id'
     | '/book/'
     | '/home/service/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AppointmentsRoute: typeof AppointmentsRouteWithChildren
   ChatRoute: typeof ChatRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  CoverageRoute: typeof CoverageRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HomeRoute: typeof HomeRouteWithChildren
   LoginRoute: typeof LoginRoute
@@ -340,9 +427,12 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRouteWithChildren
   RegisterRoute: typeof RegisterRoute
+  ServicesRoute: typeof ServicesRouteWithChildren
   TermsRoute: typeof TermsRoute
   VerifyRoute: typeof VerifyRoute
+  BookAreaRoute: typeof BookAreaRoute
   BookConfirmationRoute: typeof BookConfirmationRoute
+  BookContactRoute: typeof BookContactRoute
   BookDatetimeRoute: typeof BookDatetimeRoute
   BookDetailsRoute: typeof BookDetailsRoute
   BookReviewRoute: typeof BookReviewRoute
@@ -358,6 +448,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/appointments': {
       id: '/appointments'
       path: '/appointments'
@@ -370,6 +467,20 @@ declare module '@tanstack/react-router' {
       path: '/chat'
       fullPath: '/chat'
       preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coverage': {
+      id: '/coverage'
+      path: '/coverage'
+      fullPath: '/coverage'
+      preLoaderRoute: typeof CoverageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -435,6 +546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -463,11 +581,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/book/area': {
+      id: '/book/area'
+      path: '/book/area'
+      fullPath: '/book/area'
+      preLoaderRoute: typeof BookAreaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/book/confirmation': {
       id: '/book/confirmation'
       path: '/book/confirmation'
       fullPath: '/book/confirmation'
       preLoaderRoute: typeof BookConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/contact': {
+      id: '/book/contact'
+      path: '/book/contact'
+      fullPath: '/book/contact'
+      preLoaderRoute: typeof BookContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/book/datetime': {
@@ -518,6 +650,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile/support'
       preLoaderRoute: typeof ProfileSupportRouteImport
       parentRoute: typeof ProfileRoute
+    }
+    '/services/$id': {
+      id: '/services/$id'
+      path: '/$id'
+      fullPath: '/services/$id'
+      preLoaderRoute: typeof ServicesIdRouteImport
+      parentRoute: typeof ServicesRoute
     }
     '/home/service/$id': {
       id: '/home/service/$id'
@@ -586,10 +725,25 @@ const ProfileRouteChildren: ProfileRouteChildren = {
 const ProfileRouteWithChildren =
   ProfileRoute._addFileChildren(ProfileRouteChildren)
 
+interface ServicesRouteChildren {
+  ServicesIdRoute: typeof ServicesIdRoute
+}
+
+const ServicesRouteChildren: ServicesRouteChildren = {
+  ServicesIdRoute: ServicesIdRoute,
+}
+
+const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
+  ServicesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AppointmentsRoute: AppointmentsRouteWithChildren,
   ChatRoute: ChatRouteWithChildren,
+  ContactRoute: ContactRoute,
+  CoverageRoute: CoverageRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HomeRoute: HomeRouteWithChildren,
   LoginRoute: LoginRoute,
@@ -599,9 +753,12 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRouteWithChildren,
   RegisterRoute: RegisterRoute,
+  ServicesRoute: ServicesRouteWithChildren,
   TermsRoute: TermsRoute,
   VerifyRoute: VerifyRoute,
+  BookAreaRoute: BookAreaRoute,
   BookConfirmationRoute: BookConfirmationRoute,
+  BookContactRoute: BookContactRoute,
   BookDatetimeRoute: BookDatetimeRoute,
   BookDetailsRoute: BookDetailsRoute,
   BookReviewRoute: BookReviewRoute,

@@ -1,12 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check } from "lucide-react";
-import { Button, Card, Screen } from "@/components/kit";
-import { TextLogo } from "@/components/TextLogo";
+import { Check, Clock, MapPin, Phone } from "lucide-react";
+import { Button, Header, Screen } from "@/components/kit";
 import {
+  BUSINESS,
+  areaById,
   formatDateLong,
-  formatMoney,
-  formatTime,
+  recurrenceLabel,
   serviceById,
+  timeOfDayLabel,
 } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/book/confirmation")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     id: typeof s.id === "string" ? s.id : undefined,
   }),
-  head: () => ({ meta: [{ title: "Booking confirmed — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Request received — KEPA Home Care" }] }),
   component: ConfirmationScreen,
 });
 
@@ -24,71 +25,83 @@ function ConfirmationScreen() {
   const navigate = useNavigate();
   const { id } = Route.useSearch();
   const { appointments } = useApp();
-  const appointment = appointments.find((a) => a.id === id) ?? appointments[0];
+  const appointment = appointments.find((item) => item.id === id) ?? appointments[0];
   const service = appointment ? serviceById(appointment.serviceId) : undefined;
-
-  function addToCalendar() {
-    if (!appointment || !service) return;
-    const start = `${appointment.date.replace(/-/g, "")}T${appointment.time.replace(":", "")}00`;
-    const [h, m] = appointment.time.split(":").map(Number);
-    const endH = String(h + 1).padStart(2, "0");
-    const end = `${appointment.date.replace(/-/g, "")}T${endH}${String(m).padStart(2, "0")}00`;
-    const loc = `${appointment.address}, ${appointment.city}, ${appointment.state} ${appointment.zip}`;
-    const ics = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "BEGIN:VEVENT",
-      `DTSTART:${start}`,
-      `DTEND:${end}`,
-      `SUMMARY:TXL Med — ${service.name}`,
-      `LOCATION:${loc}`,
-      "DESCRIPTION:Mobile DOT physical with TXL Med PLLC",
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\r\n");
-    const blob = new Blob([ics], { type: "text/calendar" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "txl-med-appointment.ics";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  const area = appointment ? areaById(appointment.areaId) : undefined;
 
   return (
-    <Screen padded={false} className="flex min-h-dvh flex-col px-5 pt-[max(2rem,env(safe-area-inset-top))] pb-8">
-      <TextLogo size="sm" />
-      <div className="mx-auto mt-8 flex size-20 items-center justify-center rounded-full bg-success text-white motion-safe:animate-[check-pop_500ms_ease-out]">
-        <Check size={36} strokeWidth={2.5} />
-      </div>
-      <h1 className="mt-5 text-center font-display text-[28px] leading-[34px] font-semibold">
-        You're on the calendar
-      </h1>
-      <p className="mt-2 text-center text-sm text-muted-foreground">
-        Your mobile DOT visit request is in. We'll confirm with you before we roll.
-      </p>
-      {appointment && (
-        <Card className="mt-6">
-          <p className="text-lg font-semibold">{service?.name}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {formatDateLong(appointment.date)} · {formatTime(appointment.time)}
+    <Screen padded={false} className="min-h-dvh bg-[#F5F7FA] pb-8">
+      <Header title="Request received" back={false} />
+
+      <div className="px-4 pt-6">
+        <div className="flex flex-col items-center text-center">
+          <div className="flex size-16 items-center justify-center rounded-full bg-[#E8F0FE] text-primary motion-safe:animate-[check-pop_500ms_ease-out]">
+            <Check size={32} strokeWidth={2.5} />
+          </div>
+          <h1 className="mt-4 max-w-[18rem] font-display text-[28px] leading-8 font-bold tracking-tight">
+            Your appointment request has been received
+          </h1>
+          <p className="mt-2 max-w-[20rem] text-[15px] leading-[22px] text-muted-foreground">
+            Our care team will contact you within 24 hours to confirm your visit.
           </p>
-          <p className="mt-2 text-sm">
-            {appointment.address}, {appointment.city}, {appointment.state} {appointment.zip}
-          </p>
-          {service && <p className="mt-3 text-sm font-semibold">{formatMoney(service.price)}</p>}
-        </Card>
-      )}
-      <div className="mt-auto space-y-3 pt-8">
-        <Button full variant="outline" onClick={addToCalendar}>
-          Add to Calendar
-        </Button>
-        <Button full onClick={() => navigate({ to: "/appointments" })}>
-          View My Appointments
-        </Button>
-        <Button full variant="ghost" onClick={() => navigate({ to: "/home" })}>
-          Back to Home
-        </Button>
+        </div>
+
+        {appointment && (
+          <article className="mt-6 overflow-hidden rounded-[22px] bg-white shadow-[0_10px_28px_rgba(0,0,0,0.05)]">
+            <div className="bg-black px-5 py-4 text-white">
+              <p className="font-display text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">Visit request</p>
+              <p className="mt-1 font-display text-xl leading-6 font-bold">{service?.name ?? "In-home care"}</p>
+            </div>
+            <div className="space-y-3 px-5 py-4 text-[15px]">
+              <p className="flex items-start gap-3">
+                <Clock size={18} className="mt-0.5 shrink-0 text-primary" />
+                <span>
+                  {formatDateLong(appointment.date)} · {timeOfDayLabel(appointment.timeOfDay)}
+                  <span className="block text-[13px] text-muted-foreground">{recurrenceLabel(appointment.recurrence)}</span>
+                </span>
+              </p>
+              <p className="flex items-start gap-3">
+                <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
+                <span>
+                  {area?.name ?? "Massachusetts"}
+                  {appointment.city && (
+                    <span className="block text-[13px] text-muted-foreground">
+                      {appointment.city}, {appointment.state} {appointment.zip}
+                    </span>
+                  )}
+                </span>
+              </p>
+            </div>
+          </article>
+        )}
+
+        <div className="mt-6 space-y-3">
+          <Button full onClick={() => navigate({ to: "/appointments" })}>
+            View My Appointments
+          </Button>
+          <Button full variant="outline" onClick={() => navigate({ to: "/home" })}>
+            Back to Home
+          </Button>
+        </div>
+
+        <section className="mt-6 rounded-[22px] bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.04)]">
+          <p className="font-display text-[17px] font-bold">Need us sooner?</p>
+          <p className="mt-1 text-[13px] leading-[18px] text-muted-foreground">Office hours {BUSINESS.hours}</p>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <a
+              href={BUSINESS.phoneHref}
+              className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#E8F0FE] text-[13px] font-semibold text-primary"
+            >
+              <Phone size={16} /> {BUSINESS.phone}
+            </a>
+            <a
+              href={BUSINESS.altPhoneHref}
+              className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#E8F0FE] text-[13px] font-semibold text-primary"
+            >
+              <Phone size={16} /> {BUSINESS.altPhone}
+            </a>
+          </div>
+        </section>
       </div>
     </Screen>
   );

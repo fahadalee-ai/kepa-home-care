@@ -14,11 +14,10 @@ function PrivacyScreen() {
       <article className="space-y-3 px-4 pb-8 text-[15px] leading-[22px] text-muted-foreground">
         <p>
           {BUSINESS.name} uses the information you enter — name, contact details, and visit address — only to
-          schedule and perform mobile DOT physicals and to contact you about your appointment.
+          schedule in-home care and to contact you about your appointment.
         </p>
         <p>
-          This app is not an EMR. We do not collect or store examination findings, lab values, or Medical
-          Examiner’s Certificate images in the customer app.
+          This app stores scheduling details you enter. Clinical records stay with the care team.
         </p>
         <p>
           Account credentials are stored on this device for demo/session purposes. In production, they would be

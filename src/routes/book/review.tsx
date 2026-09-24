@@ -1,13 +1,20 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { BookFrame } from "@/components/BookFrame";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Banner, Button, Card } from "@/components/kit";
-import { formatDateLong, formatMoney, formatTime, serviceById } from "@/lib/mock-data";
+import { Button, Card } from "@/components/kit";
+import {
+  accountBookingPatch,
+  areaById,
+  formatDateLong,
+  recurrenceLabel,
+  serviceById,
+  timeOfDayLabel,
+} from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/book/review")({
-  head: () => ({ meta: [{ title: "Review booking — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Review — KEPA Home Care" }] }),
   component: () => (
     <RequireAuth>
       <ReviewScreen />
@@ -17,72 +24,59 @@ export const Route = createFileRoute("/book/review")({
 
 function ReviewScreen() {
   const navigate = useNavigate();
-  const { draft, bookAppointment } = useApp();
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const { user, draft, updateDraft, bookAppointment } = useApp();
   const service = serviceById(draft.serviceId);
+  const area = areaById(draft.areaId);
 
-  async function confirm() {
-    if (!service || !draft.date || !draft.time || !draft.address) {
-      setError("Some booking details are missing. Go back and complete each step.");
-      return;
-    }
-    setBusy(true);
-    setError("");
-    await new Promise((r) => setTimeout(r, 600));
-    const created = bookAppointment(draft);
-    setBusy(false);
-    navigate({ to: "/book/confirmation", search: { id: created.id } });
-  }
+  useEffect(() => {
+    if (user && !draft.patientName) updateDraft(accountBookingPatch(user));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
-    <BookFrame step={3}>
-      {error && (
-        <div className="mb-3">
-          <Banner>{error}</Banner>
-        </div>
-      )}
-      <Card>
-        <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Service</p>
-        <p className="mt-1 text-lg font-semibold">{service?.name ?? "Not selected"}</p>
-        {service && (
-          <p className="mt-1 text-sm text-muted-foreground">
-            {formatMoney(service.price)} · {service.duration}
-          </p>
-        )}
-        <hr className="my-3 border-border" />
-        <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">When</p>
-        <p className="mt-1 text-sm font-medium">
-          {draft.date ? formatDateLong(draft.date) : "—"} {draft.time ? `· ${formatTime(draft.time)}` : ""}
-        </p>
-        <hr className="my-3 border-border" />
-        <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Mobile visit location</p>
-        <p className="mt-1 text-sm font-medium">
-          {draft.address}
-          {draft.city ? `, ${draft.city}` : ""}
-          {draft.state ? `, ${draft.state}` : ""} {draft.zip}
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {draft.name} · {draft.phone}
-        </p>
-        {draft.notes && <p className="mt-2 text-sm text-muted-foreground">Notes: {draft.notes}</p>}
-        {service && (
-          <p className="mt-4 text-base font-semibold">
-            Estimated total {formatMoney(service.price)}
-          </p>
-        )}
+    <BookFrame step={draft.servicePreset ? 2 : 3}>
+      <Card className="rounded-2xl space-y-4">
+        <Row label="Service" value={service?.name ?? "Not selected"} edit="/book" />
+        <Row label="Area" value={area?.name ?? "Not selected"} edit="/book/area" />
+        <Row
+          label="Date & time"
+          value={`${formatDateLong(draft.date)} · ${timeOfDayLabel(draft.timeOfDay)} · ${recurrenceLabel(draft.recurrence)}`}
+          edit="/book/datetime"
+        />
+        <Row
+          label="Your details"
+          value={[draft.patientName || draft.name, draft.phone, draft.email, [draft.city, draft.state].filter(Boolean).join(", ")]
+            .filter(Boolean)
+            .join(" · ")}
+        />
       </Card>
-      <p className="mt-3 text-xs text-muted-foreground">
-        Confirming sends a visit request. TXL Med will reach out if we need to adjust the time or meetup spot.
-      </p>
-      <div className="mt-5 flex gap-2">
-        <Button variant="outline" full onClick={() => navigate({ to: "/book/details" })}>
-          Back
-        </Button>
-        <Button full disabled={busy} onClick={confirm}>
-          {busy ? "Confirming…" : "Confirm Booking"}
-        </Button>
-      </div>
+      <Button
+        full
+        className="mt-5"
+        disabled={!draft.serviceId || !draft.areaId || !draft.date}
+        onClick={() => {
+          const created = bookAppointment(draft);
+          navigate({ to: "/book/confirmation", search: { id: created.id } });
+        }}
+      >
+        Confirm Appointment Request
+      </Button>
     </BookFrame>
+  );
+}
+
+function Row({ label, value, edit }: { label: string; value: string; edit?: string }) {
+  return (
+    <div className="border-b border-border pb-3 last:border-0 last:pb-0">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{label}</p>
+        {edit && (
+          <Link to={edit as "/book"} className="text-sm font-semibold text-primary">
+            Edit
+          </Link>
+        )}
+      </div>
+      <p className="mt-1 text-sm font-medium">{value}</p>
+    </div>
   );
 }

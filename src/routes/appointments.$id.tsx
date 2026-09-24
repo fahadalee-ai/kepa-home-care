@@ -5,8 +5,8 @@ import { Calendar as DayCalendar } from "@/components/ui/calendar";
 import {
   TIME_SLOTS,
   formatDateLong,
-  formatMoney,
   formatTime,
+  timeOfDayLabel,
   serviceById,
   statusLabel,
   todayIso,
@@ -66,13 +66,8 @@ function AppointmentDetailScreen() {
         </div>
         <Card>
           <h2 className="text-xl font-semibold">{service?.name}</h2>
-          {service && (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {formatMoney(service.price)} · {service.duration}
-            </p>
-          )}
           <p className="mt-3 text-sm font-medium">
-            {formatDateLong(appointment.date)} · {formatTime(appointment.time)}
+            {formatDateLong(appointment.date)} · {timeOfDayLabel(appointment.timeOfDay || "") || formatTime(appointment.time)}
           </p>
           <p className="mt-2 text-sm">
             {appointment.address}, {appointment.city}, {appointment.state} {appointment.zip}
@@ -145,7 +140,7 @@ function AppointmentDetailScreen() {
       <ConfirmDialog
         open={confirmCancel}
         title="Cancel this visit?"
-        body="The examiner will be notified. You can book again anytime from the Book tab."
+        body="Our care team will be notified. You can book again anytime from the Book tab."
         confirmLabel="Cancel visit"
         danger
         onClose={() => setConfirmCancel(false)}

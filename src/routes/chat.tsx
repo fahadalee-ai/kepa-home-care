@@ -16,10 +16,10 @@ function ChatRoute() {
 function ChatScreen() {
   return (
     <Screen padded={false} className="pb-8">
-      <Header title="Messages" fallbackTo="/home" />
-      <div className="px-4">
-        <p className="mb-4 text-sm text-muted-foreground">
-          Talk with scheduling, your examiner, or support about a mobile DOT visit.
+      <Header title="Chat" fallbackTo="/home" />
+      <div className="px-4 pt-3">
+        <p className="mb-4 text-[15px] leading-[22px] text-muted-foreground">
+          Message the KEPA care team about a visit, coverage, or office hours.
         </p>
         {CHAT_THREADS.map((thread) => (
           <ThreadRow key={thread.id} thread={thread} />

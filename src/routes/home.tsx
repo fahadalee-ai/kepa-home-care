@@ -1,24 +1,15 @@
 import { Outlet, createFileRoute, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Bell, ChevronRight, Clock, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
-import { TextLogo } from "@/components/TextLogo";
-import { TexasWatermark } from "@/components/TexasWatermark";
-import { Button, Card, Chip, SectionTitle } from "@/components/kit";
+import { Bell, CalendarPlus, ChevronRight, HeartHandshake, MapPinned, MessageCircle, Phone, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
+import { Button, Header } from "@/components/kit";
 import { IMAGES } from "@/lib/images";
-import {
-  BUSINESS,
-  CHAT_THREADS,
-  HOW_IT_WORKS,
-  NOTIFICATIONS,
-  SERVICES,
-  TRUST_POINTS,
-  greeting,
-} from "@/lib/mock-data";
+import { BUSINESS, NOTIFICATIONS, SERVICES, TESTIMONIALS, WHY_CHOOSE, greeting } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
-import { cn } from "@/lib/utils";
+
+const WHY_ICONS = [HeartHandshake, ShieldCheck, Sparkles] as const;
 
 export const Route = createFileRoute("/home")({
-  head: () => ({ meta: [{ title: "Home — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Home — KEPA Home Care" }] }),
   component: HomeRoute,
 });
 
@@ -31,176 +22,174 @@ function HomeRoute() {
 function HomeScreen() {
   const navigate = useNavigate();
   const { user } = useApp();
+  const first = user?.name.split(" ")[0];
+  const unread = NOTIFICATIONS.filter((n) => !n.read).length;
 
   return (
-    <div className="min-h-dvh bg-background pb-8">
-      <section className="relative overflow-hidden">
-        <img
-          src={IMAGES.homeHero}
-          alt=""
-          className="h-[340px] w-full object-cover motion-safe:animate-[splash-kenburns_10s_ease-out_forwards]"
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-ink/45 via-ink/20 to-background" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-background to-transparent" />
-
-        <div className="absolute inset-x-0 top-0 flex items-start justify-between px-4 pt-[max(0.85rem,env(safe-area-inset-top))]">
-          <div>
-            <TextLogo variant="white" size="sm" className="text-left" />
-            <p className="mt-1 text-xs font-medium text-white/80">
-              {user ? `${greeting()}, ${user.name.split(" ")[0]}` : "Texas · Mobile DOT"}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <HeaderIcon
-              to="/chat"
-              label="Messages"
-              count={CHAT_THREADS.reduce((n, t) => n + t.unread, 0)}
-            >
-              <MessageCircle size={18} />
-            </HeaderIcon>
-            <HeaderIcon
+    <div className="min-h-dvh bg-[#F5F7FA] pb-8">
+      <Header
+        large
+        back={false}
+        title={first ? `${greeting()}, ${first}` : greeting()}
+        subtitle="Worcester, MA"
+        right={
+          <span className="flex items-center">
+            <Link to="/chat" aria-label="Chat" className="flex size-11 items-center justify-center text-primary">
+              <MessageCircle size={22} />
+            </Link>
+            <Link
               to="/notifications"
-              label="Notifications"
-              count={NOTIFICATIONS.filter((n) => !n.read).length}
+              aria-label="Notifications"
+              className="relative flex size-11 items-center justify-center"
             >
-              <Bell size={18} />
-            </HeaderIcon>
-          </div>
-        </div>
+              <Bell size={22} />
+              {unread > 0 && <span className="absolute top-2.5 right-2.5 size-2 rounded-full bg-primary" />}
+            </Link>
+          </span>
+        }
+      />
 
-        <div className="absolute inset-x-0 bottom-6 px-4">
-          <p className="text-[11px] font-semibold tracking-[0.2em] text-white/75 uppercase">
-            TXL Med PLLC
-          </p>
-          <h1 className="mt-1 font-display text-[26px] leading-8 font-semibold text-white">
-            Mobile DOT Physicals, Wherever You Are
-          </h1>
-          <p className="mt-2 max-w-[20rem] text-sm leading-5 text-white/80">
-            FMCSA-certified exams at your yard, home, or meetup — no clinic wait.
-          </p>
-          <Button className="mt-4" onClick={() => navigate({ to: "/book" })}>
-            Book Appointment
+      <section className="relative mx-4 mt-2 overflow-hidden rounded-[22px] shadow-[0_16px_40px_rgba(28,107,242,0.18)]">
+        <img
+          src={IMAGES.heroCare}
+          alt="Caregiver visiting a patient at home"
+          className="h-72 w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-black/10" />
+        <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+          <p className="font-display text-[11px] font-semibold tracking-[0.2em] text-white/75 uppercase">KEPA Home Care</p>
+          <h2 className="mt-2 max-w-[18rem] font-display text-[26px] leading-8 font-bold">
+            Quality home care services, you can trust
+          </h2>
+          <Button className="mt-4 bg-white text-black hover:bg-white/90" onClick={() => navigate({ to: "/book" })}>
+            Book an Appointment
           </Button>
         </div>
       </section>
 
-      <div className="px-4">
-        <SectionTitle>Our services</SectionTitle>
-        <p className="mb-3 text-sm text-muted-foreground">
-          Tap a service for the full FMCSA exam details, what to bring, and how certification works.
-        </p>
-        <div className="space-y-3">
+      <div className="mt-4 flex gap-3 overflow-x-auto px-4 pb-1 no-scrollbar">
+        <Shortcut icon={<CalendarPlus size={18} />} label="Book Appointment" onClick={() => navigate({ to: "/book" })} />
+        <Shortcut icon={<Stethoscope size={18} />} label="Our Services" onClick={() => navigate({ to: "/services" })} />
+        <Shortcut icon={<MapPinned size={18} />} label="Coverage Area" onClick={() => navigate({ to: "/coverage" })} />
+        <Shortcut icon={<Phone size={18} />} label="Call Us" href={BUSINESS.phoneHref} />
+      </div>
+
+      <section className="mx-4 mt-5 flex items-center gap-4 overflow-hidden rounded-[20px] bg-black text-white">
+        <img src={IMAGES.nurseHome} alt="" className="h-24 w-28 shrink-0 object-cover" />
+        <div className="pr-4">
+          <p className="font-display text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">Since day one</p>
+          <p className="font-display text-lg leading-6 font-bold">15 Years of Experience</p>
+          <p className="text-xs text-white/65">Massachusetts in-home healthcare</p>
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <div className="mb-3 flex items-end justify-between px-4">
+          <div>
+            <p className="font-display text-[11px] font-semibold tracking-[0.18em] text-primary uppercase">What We Do</p>
+            <h2 className="font-display text-[22px] font-bold tracking-tight">Our Services</h2>
+          </div>
+          <Link to="/services" className="text-sm font-semibold text-primary">
+            View All
+          </Link>
+        </div>
+        <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar">
           {SERVICES.map((service) => (
-            <Link key={service.id} to="/home/service/$id" params={{ id: service.id }} className="block">
-              <article className="overflow-hidden rounded-2xl border border-border bg-card">
-                <div className="relative h-36">
-                  <img src={service.image} alt="" className="size-full object-cover" />
-                  <div className="absolute inset-0 bg-linear-to-t from-ink/70 to-transparent" />
-                  {service.featured && (
-                    <Chip tone="primary" className="absolute top-3 left-3">
-                      Most booked
-                    </Chip>
-                  )}
-                  <p className="absolute bottom-3 left-3 text-xs font-semibold text-white">
-                    {service.duration}
-                  </p>
+            <Link
+              key={service.id}
+              to="/services/$id"
+              params={{ id: service.id }}
+              className="relative h-64 w-[17.5rem] shrink-0 overflow-hidden rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
+            >
+              <img src={service.image} alt="" className="size-full object-cover" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/15 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white">
+                <div>
+                  <p className="font-display text-[17px] leading-6 font-bold">{service.name}</p>
+                  <p className="mt-1 line-clamp-2 text-xs leading-4 text-white/75">{service.short}</p>
                 </div>
-                <div className="flex items-center gap-3 p-4">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-[18px] leading-6 font-semibold">{service.name}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{service.short}</p>
-                  </div>
-                  <ChevronRight className="shrink-0 text-primary" size={20} />
-                </div>
-              </article>
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">
+                  <ChevronRight size={16} />
+                </span>
+              </div>
             </Link>
           ))}
         </div>
+      </section>
 
-        <SectionTitle>How it works</SectionTitle>
-        <div className="space-y-2">
-          {HOW_IT_WORKS.map((item) => (
-            <Card key={item.title} className="flex gap-3">
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                {item.step}
+      <section className="mt-8">
+        <div className="px-4">
+          <p className="font-display text-[11px] font-semibold tracking-[0.18em] text-primary uppercase">Why KEPA</p>
+          <h2 className="font-display text-[22px] font-bold tracking-tight">Why Choose Us</h2>
+        </div>
+        <div className="mt-3 flex gap-3 overflow-x-auto px-4 pb-2 no-scrollbar">
+          {WHY_CHOOSE.map((item, index) => {
+            const Icon = WHY_ICONS[index] ?? Stethoscope;
+            return (
+              <article key={item.title} className="w-64 shrink-0 rounded-[20px] border border-black/5 bg-white p-4 shadow-[0_10px_28px_rgba(0,0,0,0.04)]">
+                <span className="flex size-11 items-center justify-center rounded-full bg-[#E8F0FE] text-primary">
+                  <Icon size={18} />
+                </span>
+                <h3 className="mt-3 font-display text-base font-bold">{item.title}</h3>
+                <p className="mt-1 text-sm leading-5 text-muted-foreground">{item.body}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <div className="px-4">
+          <p className="font-display text-[11px] font-semibold tracking-[0.18em] text-primary uppercase">Client Feedback</p>
+          <h2 className="font-display text-[22px] font-bold tracking-tight">Client Testimonials</h2>
+        </div>
+        <div className="mt-3 flex gap-3 overflow-x-auto px-4 pb-4 no-scrollbar">
+          {TESTIMONIALS.map((item) => (
+            <article key={item.name} className="flex w-72 shrink-0 flex-col rounded-[20px] border border-black/5 bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.04)]">
+              <p className="font-display text-3xl leading-none text-primary">&ldquo;</p>
+              <p className="mt-2 line-clamp-5 flex-1 text-sm leading-6 text-foreground">{item.quote}</p>
+              <div className="mt-4 border-t border-black/5 pt-3">
+                <p className="text-sm font-semibold">{item.name}</p>
+                <p className="text-xs text-muted-foreground">{item.city}</p>
               </div>
-              <div>
-                <h3 className="text-sm font-semibold">{item.title}</h3>
-                <p className="mt-0.5 text-sm text-muted-foreground">{item.body}</p>
-              </div>
-            </Card>
+            </article>
           ))}
         </div>
+      </section>
 
-        <SectionTitle>Why TXL Med</SectionTitle>
-        <div className="space-y-2">
-          {TRUST_POINTS.map((item) => (
-            <Card key={item.title} className="flex gap-3">
-              <ShieldCheck className="mt-0.5 shrink-0 text-primary" size={20} />
-              <div>
-                <h3 className="text-sm font-semibold">{item.title}</h3>
-                <p className="mt-0.5 text-sm text-muted-foreground">{item.body}</p>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        <SectionTitle>Service area</SectionTitle>
-        <Card className="relative overflow-hidden">
-          <TexasWatermark className="absolute -right-6 -bottom-8 size-40 opacity-[0.07]" />
-          <div className="relative">
-            <p className="flex items-start gap-2 text-sm text-foreground">
-              <MapPin size={16} className="mt-0.5 text-primary" />
-              {BUSINESS.serviceAreaNote}
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">{BUSINESS.serviceArea}</p>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <a
-                href={BUSINESS.phoneHref}
-                className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary"
-              >
-                <Phone size={16} />
-                {BUSINESS.phone}
-              </a>
-              <span className="inline-flex min-h-11 items-center gap-2 text-sm text-muted-foreground">
-                <Clock size={16} />
-                {BUSINESS.hours}
-              </span>
-            </div>
-          </div>
-        </Card>
-      </div>
     </div>
   );
 }
 
-function HeaderIcon({
-  to,
+function Shortcut({
+  icon,
   label,
-  count,
-  children,
+  onClick,
+  href,
 }: {
-  to: "/chat" | "/notifications";
+  icon: ReactNode;
   label: string;
-  count: number;
-  children: ReactNode;
+  onClick?: () => void;
+  href?: string;
 }) {
+  const inner = (
+    <>
+      <span className="flex size-9 items-center justify-center rounded-xl bg-[#E8F0FE] text-primary">{icon}</span>
+      <span className="pr-1 text-[13px] leading-4 font-semibold whitespace-nowrap">{label}</span>
+    </>
+  );
+  const cls =
+    "flex h-14 shrink-0 items-center gap-2 rounded-2xl border border-black/5 bg-white px-3 shadow-[0_8px_20px_rgba(0,0,0,0.04)]";
+  if (href) {
+    return (
+      <a href={href} className={cls}>
+        {inner}
+      </a>
+    );
+  }
   return (
-    <Link
-      to={to}
-      aria-label={label}
-      className="relative flex size-11 items-center justify-center rounded-xl border border-white/30 bg-ink/30 text-white backdrop-blur-sm"
-    >
-      {children}
-      {count > 0 && (
-        <span
-          className={cn(
-            "absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground",
-          )}
-        >
-          {count}
-        </span>
-      )}
-    </Link>
+    <button type="button" onClick={onClick} className={cls}>
+      {inner}
+    </button>
   );
 }

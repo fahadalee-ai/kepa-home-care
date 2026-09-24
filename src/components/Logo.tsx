@@ -1,5 +1,5 @@
-import logoColor from "@/img/Logo.svg";
-import logoWhite from "@/img/logo-w.svg";
+import logoColor from "@/img/logo.png";
+import logoWhite from "@/img/logo-white.png";
 import { cn } from "@/lib/utils";
 
 export function BrandLogo({
@@ -12,7 +12,7 @@ export function BrandLogo({
   return (
     <img
       src={variant === "white" ? logoWhite : logoColor}
-      alt="TXL Med PLLC"
+      alt="KEPA Home Care"
       className={cn("select-none object-contain", className)}
     />
   );

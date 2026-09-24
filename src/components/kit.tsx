@@ -1,5 +1,5 @@
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +32,7 @@ export function Header({
   title,
   subtitle,
   back = true,
+  large = false,
   right,
   dark,
   fallbackTo = "/",
@@ -39,39 +40,74 @@ export function Header({
   title: string;
   subtitle?: string;
   back?: boolean;
+  large?: boolean;
   right?: ReactNode;
   dark?: boolean;
   fallbackTo?: string;
 }) {
   const router = useRouter();
   const canGoBack = useCanGoBack();
+
+  function goBack() {
+    if (canGoBack) router.history.back();
+    else router.navigate({ to: fallbackTo as "/" });
+  }
+
+  const backButton = back ? (
+    <button
+      type="button"
+      aria-label="Go back"
+      onClick={goBack}
+      className={cn(
+        "flex h-11 min-w-11 items-center justify-center",
+        dark ? "text-white" : "text-primary",
+      )}
+    >
+      <ChevronLeft size={28} strokeWidth={2.25} />
+    </button>
+  ) : (
+    <span className="h-11 w-11" />
+  );
+
+  if (large) {
+    return (
+      <header
+        className={cn(
+          "sticky top-0 z-30 pt-[env(safe-area-inset-top)] backdrop-blur-md",
+          dark ? "bg-black/80 text-white" : "bg-background/95 text-foreground",
+        )}
+      >
+        {back && (
+          <div className="flex h-11 items-center px-1">
+            {backButton}
+          </div>
+        )}
+        <div className={cn("flex items-start justify-between gap-3 px-4 pb-2", back ? "" : "pt-3")}>
+          <div className="min-w-0">
+            {subtitle && (
+              <p className="font-display text-[13px] font-semibold tracking-[0.16em] text-primary uppercase">{subtitle}</p>
+            )}
+            <h1 className="font-display text-[34px] leading-[41px] font-bold tracking-tight">{title}</h1>
+          </div>
+          {right && <div className="shrink-0 pt-1">{right}</div>}
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header
       className={cn(
-        "sticky top-0 z-30 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3",
-        dark ? "bg-ink text-white" : "bg-background text-foreground",
+        "sticky top-0 z-30 border-b pt-[env(safe-area-inset-top)] backdrop-blur-md",
+        dark ? "border-white/15 bg-black/80 text-white" : "border-black/10 bg-background/95 text-foreground",
       )}
     >
-      <div className="flex items-center gap-3">
-        {back && (
-          <button
-            aria-label="Go back"
-            onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: fallbackTo as "/" }))}
-            className={cn(
-              "flex h-11 w-11 items-center justify-center rounded-xl border transition-colors",
-              dark
-                ? "border-white/25 text-white hover:bg-white/10"
-                : "border-border text-foreground hover:bg-muted",
-            )}
-          >
-            <ArrowLeft size={18} strokeWidth={2} />
-          </button>
-        )}
-        <div className="min-w-0 flex-1">
-          <h1 className="truncate text-xl font-semibold tracking-tight">{title}</h1>
-          {subtitle && <p className={cn("truncate text-xs", dark ? "text-white/70" : "text-muted-foreground")}>{subtitle}</p>}
-        </div>
-        {right}
+      <div className="relative flex h-11 items-center px-1">
+        {backButton}
+        <h1 className="pointer-events-none absolute inset-x-16 truncate text-center font-display text-[17px] leading-[22px] font-semibold">
+          {title}
+        </h1>
+        <div className="ml-auto flex min-w-11 items-center justify-end pr-3">{right}</div>
       </div>
     </header>
   );
@@ -99,7 +135,7 @@ export function Button({
     <button
       {...props}
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold tracking-tight transition-colors disabled:opacity-50",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 rounded-2xl px-4 py-3 text-[17px] leading-[22px] font-semibold tracking-tight transition-colors active:bg-primary-dark disabled:opacity-50",
         styles,
         full && "w-full",
         className,
@@ -231,7 +267,7 @@ export function Field({
 }) {
   return (
     <label className="mb-4 block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <span className="mb-1.5 block text-[13px] leading-[18px] font-medium text-muted-foreground">
         {label}
       </span>
       {children}
@@ -242,7 +278,7 @@ export function Field({
 }
 
 export const inputClass =
-  "w-full rounded-xl border border-border bg-card px-3 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-foreground/40";
+  "w-full min-h-11 rounded-xl border border-black/10 bg-white px-4 py-3 text-[17px] leading-[22px] text-foreground outline-none placeholder:text-muted-foreground focus:border-primary";
 
 export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={cn(inputClass, props.className)} />;

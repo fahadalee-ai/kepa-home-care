@@ -2,13 +2,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { FormEvent } from "react";
 import { BookFrame } from "@/components/BookFrame";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Button, TextInputField, Textarea, Field } from "@/components/kit";
-import { formatPhone, phoneError, required } from "@/lib/validation";
+import { Button, Field, Input, Textarea } from "@/components/kit";
+import { required } from "@/lib/validation";
 import { useFormValidation } from "@/lib/useFormValidation";
 import { useApp } from "@/lib/store";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/book/details")({
-  head: () => ({ meta: [{ title: "Your details — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Patient details — KEPA Home Care" }] }),
   component: () => (
     <RequireAuth>
       <DetailsScreen />
@@ -19,111 +20,115 @@ export const Route = createFileRoute("/book/details")({
 function DetailsScreen() {
   const navigate = useNavigate();
   const { user, draft, updateDraft } = useApp();
-
   const form = useFormValidation(
     {
-      name: draft.name || user?.name || "",
-      phone: draft.phone || user?.phone || "",
-      address: draft.address,
-      city: draft.city,
-      state: draft.state || "TX",
-      zip: draft.zip,
-      notes: draft.notes,
+      bookingFor: draft.bookingFor,
+      patientName: draft.patientName || user?.name || "",
+      patientDob: draft.patientDob || user?.dob || "",
+      address: draft.address || user?.address || "",
+      city: draft.city || user?.city || "",
+      state: draft.state || "MA",
+      zip: draft.zip || user?.zip || "",
+      medicalNotes: draft.medicalNotes,
+      insurance: draft.insurance,
+      selfPay: draft.selfPay ? "yes" : "no",
     },
     (v) => ({
-      name: required(v.name, "Name"),
-      phone: phoneError(v.phone),
-      address: required(v.address, "Street address"),
+      patientName: required(v.patientName, "Patient name"),
+      patientDob: required(v.patientDob, "Date of birth"),
+      address: required(v.address, "Address"),
       city: required(v.city, "City"),
       state: required(v.state, "State"),
       zip: v.zip.trim().length < 5 ? "Enter a valid ZIP" : undefined,
     }),
   );
 
-  function next(e: FormEvent) {
+  function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (!form.submit()) return;
     updateDraft({
-      name: form.values.name,
-      phone: form.values.phone,
+      bookingFor: form.values.bookingFor === "someone" ? "someone" : "myself",
+      patientName: form.values.patientName,
+      patientDob: form.values.patientDob,
       address: form.values.address,
       city: form.values.city,
       state: form.values.state,
       zip: form.values.zip,
-      notes: form.values.notes,
+      medicalNotes: form.values.medicalNotes,
+      insurance: form.values.selfPay === "yes" ? "" : form.values.insurance,
+      selfPay: form.values.selfPay === "yes",
     });
-    navigate({ to: "/book/review" });
+    navigate({ to: "/book/datetime" });
   }
 
   return (
     <BookFrame step={2}>
-      <p className="mb-3 text-sm text-muted-foreground">
-        Tell us where the examiner should meet you. Address is required for a mobile visit.
-      </p>
-      <form onSubmit={next}>
-        <TextInputField
-          label="Name"
-          value={form.values.name}
-          onChange={(e) => form.set("name", e.target.value)}
-          onBlur={() => form.touch("name")}
-          error={form.errors.name}
-        />
-        <TextInputField
-          label="Phone"
-          type="tel"
-          value={form.values.phone}
-          onChange={(e) => form.set("phone", formatPhone(e.target.value))}
-          onBlur={() => form.touch("phone")}
-          error={form.errors.phone}
-        />
-        <TextInputField
-          label="On-site address"
-          autoComplete="street-address"
-          placeholder="Yard, terminal, or meetup street"
-          value={form.values.address}
-          onChange={(e) => form.set("address", e.target.value)}
-          onBlur={() => form.touch("address")}
-          error={form.errors.address}
-        />
-        <div className="grid grid-cols-2 gap-3">
-          <TextInputField
-            label="City"
-            value={form.values.city}
-            onChange={(e) => form.set("city", e.target.value)}
-            onBlur={() => form.touch("city")}
-            error={form.errors.city}
-          />
-          <TextInputField
-            label="State"
-            value={form.values.state}
-            onChange={(e) => form.set("state", e.target.value.toUpperCase().slice(0, 2))}
-            onBlur={() => form.touch("state")}
-            error={form.errors.state}
-          />
+      <form onSubmit={onSubmit}>
+        <p className="mb-2 text-sm font-medium">Booking for</p>
+        <div className="mb-4 grid grid-cols-2 gap-2">
+          {(
+            [
+              ["myself", "Myself"],
+              ["someone", "Someone Else"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => form.set("bookingFor", id)}
+              className={cn(
+                "min-h-11 rounded-2xl border text-sm font-semibold",
+                form.values.bookingFor === id ? "border-primary bg-primary text-white" : "border-border bg-white",
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-        <TextInputField
-          label="ZIP"
-          inputMode="numeric"
-          value={form.values.zip}
-          onChange={(e) => form.set("zip", e.target.value.replace(/\D/g, "").slice(0, 10))}
-          onBlur={() => form.touch("zip")}
-          error={form.errors.zip}
-        />
-        <Field label="Notes" hint="Gate codes, parking, or which entrance to use.">
-          <Textarea
-            value={form.values.notes}
-            onChange={(e) => form.set("notes", e.target.value)}
-            placeholder="Optional"
-          />
+        <Field label="Patient full name" error={form.errors.patientName}>
+          <Input value={form.values.patientName} onChange={(e) => form.set("patientName", e.target.value)} />
         </Field>
-        <div className="mt-2 flex gap-2">
-          <Button type="button" variant="outline" full onClick={() => navigate({ to: "/book/datetime" })}>
-            Back
-          </Button>
-          <Button type="submit" full>
-            Continue
-          </Button>
+        <Field label="Date of birth" error={form.errors.patientDob}>
+          <Input type="date" value={form.values.patientDob} onChange={(e) => form.set("patientDob", e.target.value)} />
+        </Field>
+        <Field label="Address" error={form.errors.address}>
+          <Input value={form.values.address} onChange={(e) => form.set("address", e.target.value)} />
+        </Field>
+        <Field label="City" error={form.errors.city}>
+          <Input value={form.values.city} onChange={(e) => form.set("city", e.target.value)} />
+        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="State" error={form.errors.state}>
+            <Input value={form.values.state} onChange={(e) => form.set("state", e.target.value)} />
+          </Field>
+          <Field label="ZIP" error={form.errors.zip}>
+            <Input inputMode="numeric" value={form.values.zip} onChange={(e) => form.set("zip", e.target.value)} />
+          </Field>
         </div>
+        <Field label="Relevant medical notes" hint="Optional">
+          <Textarea value={form.values.medicalNotes} onChange={(e) => form.set("medicalNotes", e.target.value)} />
+        </Field>
+        <div className="mb-4 flex items-center justify-between rounded-2xl bg-white px-3 py-3">
+          <span className="text-sm font-medium">Self-pay</span>
+          <button
+            type="button"
+            onClick={() => form.set("selfPay", form.values.selfPay === "yes" ? "no" : "yes")}
+            className={cn(
+              "min-h-9 rounded-full px-3 text-xs font-semibold",
+              form.values.selfPay === "yes" ? "bg-primary text-white" : "bg-[#E8F0FE] text-primary",
+            )}
+          >
+            {form.values.selfPay === "yes" ? "On" : "Off"}
+          </button>
+        </div>
+        {form.values.selfPay !== "yes" && (
+          <Field label="Insurance provider" hint="Optional">
+            <Input value={form.values.insurance} onChange={(e) => form.set("insurance", e.target.value)} />
+          </Field>
+        )}
+        <Button type="submit" full>
+          Continue
+        </Button>
       </form>
     </BookFrame>
   );

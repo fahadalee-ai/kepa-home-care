@@ -1,22 +1,22 @@
-import splashHighway from "@/img/splash-dot-highway.png";
-import splashExam from "@/img/splash-onsite-exam.png";
-import onboardHighway from "@/img/onboard-highway.png";
-import onboardExam from "@/img/onboard-exam.png";
-import onboardBook from "@/img/onboard-book.png";
-import authHighway from "@/img/auth-highway.png";
-import authTerminal from "@/img/auth-terminal.png";
+const u = (id: string, extra = "") =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=2000&q=85${extra}`;
 
-/** Hi-res imagery for TXL Med screens. */
+/** Hi-res home-care photography for KEPA screens. */
 export const IMAGES = {
-  splashHighway,
-  splashExam,
-  onboardingHighway: onboardHighway,
-  onboardingExam: onboardExam,
-  onboardingSchedule: onboardBook,
-  authRoad: authHighway,
-  authTerminal,
-  homeHero: splashHighway,
-  serviceDot: onboardExam,
-  serviceRenewal: splashExam,
-  serviceFleet: authTerminal,
+  nurseHome: u("photo-1576765608535-5f04d1e3f289"),
+  ptHome: u("photo-1571019614242-c5c5dee9f50b", "&sat=-20"),
+  familySmile: u("photo-1581579438747-1dc8d17bbce4"),
+  skilledNursing: u("photo-1576765608535-5f04d1e3f289"),
+  homeHealthAide: u("photo-1581579438747-1dc8d17bbce4"),
+  physicalTherapy: u("photo-1576091160399-112ba8d25d1d"),
+  occupationalTherapy: u("photo-1576091160550-2173dba999ef"),
+  teamNurse: u("photo-1559839734-2b71ea197ec2"),
+  teamAide: u("photo-1582750433449-648ed127bb54"),
+  teamPt: u("photo-1612349317150-e413f6a5b16d"),
+  teamOt: u("photo-1594824476967-48c8b964273f"),
+  heroCare: u("photo-1576765607924-3f7b8410a787"),
+  areaWorcester: u("photo-1576765608535-5f04d1e3f289"),
+  areaBoston: u("photo-1559839734-2b71ea197ec2"),
+  areaLowell: u("photo-1576091160399-112ba8d25d1d"),
+  areaSpringfield: u("photo-1581579438747-1dc8d17bbce4"),
 } as const;

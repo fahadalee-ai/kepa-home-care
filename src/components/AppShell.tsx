@@ -16,8 +16,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-background shadow-[0_0_0_1px_rgba(27,42,68,0.08)]">
-      <main className={cn("relative flex-1", showTabs && "pb-[calc(4.5rem+env(safe-area-inset-bottom))]")}>
+    <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-background shadow-[0_0_0_1px_rgba(0,0,0,0.12)]">
+      <main className={cn("relative flex-1", showTabs && "pb-[calc(5.25rem+env(safe-area-inset-bottom))]")}>
         {children}
       </main>
       {showTabs && <TabBar />}

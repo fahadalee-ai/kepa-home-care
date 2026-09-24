@@ -12,7 +12,7 @@ export function AuthShell({
   children,
   footer,
   showBack = true,
-  image = IMAGES.authRoad,
+  image = IMAGES.nurseHome,
 }: {
   title: string;
   subtitle?: string;

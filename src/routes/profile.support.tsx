@@ -33,7 +33,7 @@ function SupportScreen() {
             </span>
           </a>
         </Card>
-        <p className="mt-4 text-sm text-muted-foreground">{BUSINESS.serviceAreaNote}</p>
+        <p className="mt-4 text-sm text-muted-foreground">{BUSINESS.fullAddress}</p>
       </div>
     </Screen>
   );

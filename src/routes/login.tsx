@@ -1,9 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Mail } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { AuthInput, AuthShell, PasswordField } from "@/components/AuthShell";
-import { Button } from "@/components/kit";
-import { IMAGES } from "@/lib/images";
+import { PasswordField } from "@/components/AuthShell";
+import { TextLogo } from "@/components/TextLogo";
+import { Button, Field, Header, Input } from "@/components/kit";
 import { useApp } from "@/lib/store";
 
 type Search = { next?: string };
@@ -12,7 +11,7 @@ export const Route = createFileRoute("/login")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     next: typeof s.next === "string" ? s.next : undefined,
   }),
-  head: () => ({ meta: [{ title: "Log In — TXL Med PLLC" }] }),
+  head: () => ({ meta: [{ title: "Log In — KEPA Home Care" }] }),
   component: LoginScreen,
 });
 
@@ -20,48 +19,33 @@ function LoginScreen() {
   const navigate = useNavigate();
   const { next } = Route.useSearch();
   const { login } = useApp();
-  const [busy, setBusy] = useState(false);
-  const [identifier, setIdentifier] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    await new Promise((r) => setTimeout(r, 300));
-    login(identifier, password);
-    setBusy(false);
+  function finish() {
     if (next?.startsWith("/")) navigate({ to: next as "/home" });
     else navigate({ to: "/home" });
   }
 
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    login(email, password);
+    finish();
+  }
+
   return (
-    <AuthShell
-      title="Welcome back"
-      subtitle="Log in to book a mobile DOT physical or manage your visits."
-      image={IMAGES.authRoad}
-      footer={
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link to="/register" className="font-semibold text-primary">
-            Sign Up
-          </Link>
-        </p>
-      }
-    >
-      <form onSubmit={onSubmit} noValidate className="relative">
-        <label className="mb-4 block">
-          <span className="mb-1 block text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Email or phone
-          </span>
-          <AuthInput
-            icon={<Mail size={16} />}
-            inputMode="email"
-            autoComplete="username"
-            placeholder="you@email.com or (512) 555-0148"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-          />
-        </label>
+    <div className="min-h-dvh bg-background pb-8">
+      <Header title="Log In" fallbackTo="/onboarding" />
+      <div className="px-4 pt-4">
+      <TextLogo size="md" />
+      <h1 className="mt-6 text-center font-display text-[28px] font-bold">Welcome Back</h1>
+      <p className="mt-2 text-center text-sm text-muted-foreground">
+        Log in to manage your appointments and care plan.
+      </p>
+      <form onSubmit={onSubmit} className="mt-6" noValidate>
+        <Field label="Email Address">
+          <Input type="text" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </Field>
         <PasswordField
           label="Password"
           autoComplete="current-password"
@@ -73,10 +57,44 @@ function LoginScreen() {
             Forgot Password?
           </Link>
         </div>
-        <Button type="submit" full disabled={busy}>
-          {busy ? "Signing in…" : "Log In"}
+        <Button type="submit" full>
+          Log In
         </Button>
       </form>
-    </AuthShell>
+      <div className="my-5 flex items-center gap-3 text-xs tracking-wide text-muted-foreground uppercase">
+        <span className="h-px flex-1 bg-border" />
+        or continue with
+        <span className="h-px flex-1 bg-border" />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            login("maria@example.com", "Care1234");
+            finish();
+          }}
+        >
+          Google
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            login("maria@example.com", "Care1234");
+            finish();
+          }}
+        >
+          Apple
+        </Button>
+      </div>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link to="/register" className="font-semibold text-primary">
+          Sign Up
+        </Link>
+      </p>
+      </div>
+    </div>
   );
 }

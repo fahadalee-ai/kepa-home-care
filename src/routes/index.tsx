@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TXL Med PLLC" },
+      { title: "KEPA Home Care" },
       {
         name: "description",
-        content: "Mobile DOT physicals across Texas — TXL Med PLLC.",
+        content: "Quality home care services, you can trust.",
       },
     ],
   }),
@@ -20,70 +20,49 @@ export const Route = createFileRoute("/")({
 
 function SplashScreen() {
   const navigate = useNavigate();
-  const { ready } = useApp();
-  const [phase, setPhase] = useState<"in" | "hold" | "out">("in");
-  const [showExam, setShowExam] = useState(false);
+  const { ready, user, onboarded } = useApp();
+  const [phase, setPhase] = useState<"in" | "out">("in");
 
   useEffect(() => {
     if (!ready) return;
-    const enter = window.setTimeout(() => setPhase("hold"), 500);
-    const swap = window.setTimeout(() => setShowExam(true), 900);
-    let routed = false;
-
-    function route() {
-      if (routed) return;
-      routed = true;
-      setPhase("out");
-      window.setTimeout(() => {
-        navigate({ to: "/onboarding" });
-      }, 200);
-    }
-
-    const minHold = window.setTimeout(route, 1600);
-    const cap = window.setTimeout(route, 3000);
-
+    const leave = window.setTimeout(() => setPhase("out"), 2200);
+    const go = window.setTimeout(() => {
+      if (user || onboarded) navigate({ to: "/home" });
+      else navigate({ to: "/onboarding" });
+    }, 2500);
     return () => {
-      window.clearTimeout(enter);
-      window.clearTimeout(swap);
-      window.clearTimeout(minHold);
-      window.clearTimeout(cap);
+      window.clearTimeout(leave);
+      window.clearTimeout(go);
     };
-  }, [navigate, ready]);
+  }, [navigate, ready, user, onboarded]);
 
   return (
-    <div className="relative flex min-h-dvh flex-col overflow-hidden bg-ink">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-black">
       <img
-        src={IMAGES.splashHighway}
+        src={IMAGES.nurseHome}
         alt=""
-        className="absolute inset-0 size-full object-cover motion-safe:animate-[splash-kenburns_4s_ease-out_forwards]"
+        className="absolute inset-0 size-full object-cover object-[center_30%] motion-safe:animate-[splash-kenburns_4.5s_ease-out_forwards]"
       />
-      <img
-        src={IMAGES.splashExam}
-        alt=""
-        className={cn(
-          "absolute inset-0 size-full object-cover object-[center_20%] transition-opacity duration-700",
-          showExam ? "opacity-100 motion-safe:animate-[splash-kenburns_4s_ease-out_forwards]" : "opacity-0",
-        )}
-      />
-      <div className="absolute inset-0 bg-linear-to-b from-ink/35 via-ink/25 to-ink/92" />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-ink to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/55 to-black/85" />
 
       <div
         className={cn(
-          "relative z-10 flex min-h-dvh flex-col items-center justify-end px-8 pb-[max(3.5rem,env(safe-area-inset-bottom))]",
-          phase === "in" && "motion-safe:animate-[splash-in_500ms_ease-out_forwards]",
-          phase === "hold" && "motion-safe:animate-[splash-pulse_1400ms_ease-in-out_infinite]",
-          phase === "out" && "motion-safe:animate-[splash-out_200ms_ease-in_forwards]",
+          "relative z-10 flex flex-col items-center px-8",
+          phase === "out" && "motion-safe:animate-[splash-out_280ms_ease-in_forwards]",
         )}
       >
-        <TextLogo variant="white" size="lg" />
-        <span className="mt-4 h-px w-20 origin-center bg-white/80 motion-safe:animate-[splash-underline_600ms_ease-out_200ms_both]" />
-        <p className="mt-4 text-center text-[12px] leading-4 font-medium tracking-[0.22em] text-white/85 uppercase">
-          Mobile DOT Physicals
+        <div className="relative motion-safe:animate-[splash-in_800ms_cubic-bezier(0.22,1,0.36,1)_forwards]">
+          <span className="absolute -inset-8 rounded-full bg-primary/40 blur-3xl motion-safe:animate-[splash-pulse_1.8s_ease-in-out_infinite]" />
+          <TextLogo variant="white" size="lg" className="relative drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]" />
+        </div>
+        <span className="mt-5 h-px w-16 origin-center bg-primary motion-safe:animate-[splash-underline_700ms_ease-out_400ms_both]" />
+        <p className="mt-4 max-w-[16rem] text-center font-sans text-[15px] leading-6 text-white/90 motion-safe:animate-[splash-in_700ms_ease-out_500ms_both]">
+          Quality home care services, you can trust
         </p>
-        <p className="mt-2 max-w-[16rem] text-center text-[13px] leading-5 text-white/70">
-          Certified exams on your route — across Texas
-        </p>
+      </div>
+
+      <div className="absolute inset-x-10 bottom-[max(2.5rem,env(safe-area-inset-bottom))] z-10 h-1 overflow-hidden rounded-full bg-white/20">
+        <div className="h-full w-1/3 rounded-full bg-primary motion-safe:animate-[splash-bar_1.4s_ease-in-out_infinite]" />
       </div>
     </div>
   );

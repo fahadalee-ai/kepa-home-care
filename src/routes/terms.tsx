@@ -13,17 +13,14 @@ function TermsScreen() {
       <Header title="Terms of Service" fallbackTo="/login" />
       <article className="space-y-3 px-4 pb-8 text-[15px] leading-[22px] text-muted-foreground">
         <p>
-          {BUSINESS.name} provides mobile DOT physical scheduling as a convenience. Booking in this app is a
-          request for an on-site exam — it is not medical advice and does not create an electronic medical
-          record.
+          {BUSINESS.name} provides in-home care scheduling as a convenience. Booking in this app is a request
+          for a visit — it is not medical advice and does not create a medical record.
         </p>
         <p>
-          You are responsible for providing an accurate exam location, being available at the selected time, and
-          bringing identification required for a DOT physical.
+          You are responsible for providing an accurate home address and being available at the preferred time.
         </p>
         <p>
-          Exam outcomes, certificates, and clinical determinations are handled by the examining provider at the
-          visit. This app does not store exam results.
+          Clinical care is provided by KEPA clinicians during the visit. This app stores scheduling details only.
         </p>
         <p>
           Contact us at {BUSINESS.email} or {BUSINESS.phone} with questions about these terms.
