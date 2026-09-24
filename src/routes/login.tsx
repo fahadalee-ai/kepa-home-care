@@ -35,7 +35,7 @@ function LoginScreen() {
 
   return (
     <div className="min-h-dvh bg-background pb-8">
-      <Header title="Log In" fallbackTo="/onboarding" />
+      <Header title="Log In" back={false} />
       <div className="px-4 pt-4">
       <TextLogo size="md" />
       <h1 className="mt-6 text-center font-display text-[28px] font-bold">Welcome Back</h1>

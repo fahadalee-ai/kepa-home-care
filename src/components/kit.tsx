@@ -49,8 +49,12 @@ export function Header({
   const canGoBack = useCanGoBack();
 
   function goBack() {
-    if (canGoBack) router.history.back();
-    else router.navigate({ to: fallbackTo as "/" });
+    const index = router.state.location.state.__TSR_index;
+    if (canGoBack && typeof index === "number" && index > 0) {
+      router.history.back();
+      return;
+    }
+    void router.navigate({ to: fallbackTo as "/" });
   }
 
   const backButton = back ? (
@@ -59,14 +63,14 @@ export function Header({
       aria-label="Go back"
       onClick={goBack}
       className={cn(
-        "flex h-11 min-w-11 items-center justify-center",
+        "relative z-20 flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center",
         dark ? "text-white" : "text-primary",
       )}
     >
       <ChevronLeft size={28} strokeWidth={2.25} />
     </button>
   ) : (
-    <span className="h-11 w-11" />
+    <span className="h-11 w-11 shrink-0" />
   );
 
   if (large) {
@@ -102,12 +106,10 @@ export function Header({
         dark ? "border-white/15 bg-black/80 text-white" : "border-black/10 bg-background/95 text-foreground",
       )}
     >
-      <div className="relative flex h-11 items-center px-1">
+      <div className="grid h-11 grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-center px-1">
         {backButton}
-        <h1 className="pointer-events-none absolute inset-x-16 truncate text-center font-display text-[17px] leading-[22px] font-semibold">
-          {title}
-        </h1>
-        <div className="ml-auto flex min-w-11 items-center justify-end pr-3">{right}</div>
+        <p className="truncate text-center font-display text-[17px] leading-[22px] font-semibold">{title}</p>
+        <div className="flex min-w-0 items-center justify-end">{right}</div>
       </div>
     </header>
   );

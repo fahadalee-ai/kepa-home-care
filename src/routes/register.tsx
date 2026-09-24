@@ -59,7 +59,7 @@ function RegisterScreen() {
   if (step === "profile") {
     return (
       <div className="min-h-dvh bg-background pb-8">
-        <Header title="Your Address" fallbackTo="/register" />
+        <Header title="Your Address" back={false} />
         <div className="px-4 pt-4">
         <p className="font-display text-[13px] font-semibold tracking-[0.16em] text-primary uppercase">Optional</p>
         <h1 className="mt-2 font-display text-[28px] font-bold">Your home address</h1>
@@ -115,7 +115,7 @@ function RegisterScreen() {
 
   return (
     <div className="min-h-dvh bg-background pb-8">
-      <Header title="Create Account" fallbackTo="/onboarding" />
+      <Header title="Create Account" back={false} />
       <div className="px-4 pt-4">
       <h1 className="font-display text-[22px] leading-7 font-bold">Create Your Account</h1>
       <p className="mt-2 text-sm text-muted-foreground">Join KEPA Home Care to book and manage in-home visits.</p>
