@@ -96,7 +96,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: asset("/favicon.ico"), sizes: "32x32" },
       { rel: "icon", href: asset("/favicon.png"), type: "image/png" },
+      { rel: "apple-touch-icon", href: asset("/favicon.png") },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MessageCircle, Phone } from "lucide-react";
 import { Header, Screen } from "@/components/kit";
+import { IMAGES } from "@/lib/images";
 import { BUSINESS, COVERAGE_AREAS } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
@@ -81,7 +82,7 @@ function MaMap() {
   return (
     <div className="relative mt-4 overflow-hidden rounded-[22px] shadow-[0_10px_28px_rgba(0,0,0,0.08)]">
       <div className="relative aspect-[3/2] w-full" role="img" aria-label="Massachusetts coverage map">
-        <img src="/massachusetts-light.jpg" alt="" className="absolute inset-0 size-full object-cover" />
+        <img src={IMAGES.massachusetts} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-white/85 to-transparent" />
         <p className="absolute top-3 left-4 font-display text-[13px] font-semibold tracking-[0.14em] text-primary uppercase">
           Massachusetts
