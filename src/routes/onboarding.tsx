@@ -13,7 +13,7 @@ export const Route = createFileRoute("/onboarding")({
 
 function OnboardingScreen() {
   const navigate = useNavigate();
-  const { markOnboarded } = useApp();
+  const { user, markOnboarded } = useApp();
   const [api, setApi] = useState<CarouselApi>();
   const [index, setIndex] = useState(0);
   const last = index === ONBOARDING.length - 1;
@@ -30,7 +30,8 @@ function OnboardingScreen() {
 
   function go(to: "/register" | "/login") {
     markOnboarded();
-    navigate({ to });
+    if (user) navigate({ to: "/home" });
+    else navigate({ to });
   }
 
   return (

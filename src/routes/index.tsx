@@ -20,21 +20,20 @@ export const Route = createFileRoute("/")({
 
 function SplashScreen() {
   const navigate = useNavigate();
-  const { ready, user, onboarded } = useApp();
+  const { ready } = useApp();
   const [phase, setPhase] = useState<"in" | "out">("in");
 
   useEffect(() => {
     if (!ready) return;
     const leave = window.setTimeout(() => setPhase("out"), 2200);
     const go = window.setTimeout(() => {
-      if (user || onboarded) navigate({ to: "/home" });
-      else navigate({ to: "/onboarding" });
+      navigate({ to: "/onboarding" });
     }, 2500);
     return () => {
       window.clearTimeout(leave);
       window.clearTimeout(go);
     };
-  }, [navigate, ready, user, onboarded]);
+  }, [navigate, ready]);
 
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-black">
